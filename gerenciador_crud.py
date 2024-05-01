@@ -127,15 +127,17 @@ class GerenciadorCRUD:
         self.connection.commit()
         print(f"Usuário com ID {id} atualizado com sucesso.")
 
-    def autenticar_usuario(self, usuario_id, senha):
-        self.cursor.execute("SELECT * FROM usuarios WHERE id = ? AND senha = ?", (usuario_id, senha))
+    def autenticar_usuario(self, email, senha):
+        self.cursor.execute("SELECT * FROM usuarios WHERE email = ? AND senha = ?", (email, senha))
         usuario = self.cursor.fetchone()
         if usuario:
-            print(f"Usuário {usuario['nome']} autenticado com sucesso.")
-            return usuario
+            # Transforma a tupla em dicionário para facilitar o acesso por nome de coluna
+            columns = ['id', 'nome', 'senha', 'telefone', 'endereco', 'is_flamengo', 'watch_one_piece', 'is_de_sousa', 'is_funcionario', 'email']
+            usuario_dict = dict(zip(columns, usuario))
+            print(f"Usuário {usuario_dict['nome']} autenticado com sucesso.")
+            return True, usuario_dict
         else:
-            print("Falha na autenticação. Verifique as credenciais.")
-            return None
+            return False, None
 
     def adicionar_produto(self, nome, preco, categoria, quantidade_estoque):
         self.cursor.execute("INSERT INTO produtos (nome, preco, categoria, quantidade_estoque) VALUES (?, ?, ?, ?)", 
@@ -313,7 +315,7 @@ class GerenciadorCRUD:
             print(f"Funcionário {funcionario[1]} logado com sucesso.")
             return True
 
-        print("Falha no login. ID ou senha incorretos.")
+        print("Falha no login. Email ou senha incorretos.")
         return False
 
     def logout(self):

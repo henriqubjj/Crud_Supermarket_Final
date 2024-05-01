@@ -78,6 +78,10 @@ class RegisterWindow(tk.Toplevel):
         one_piece = self.watch_one_piece.get()
         de_sousa = self.is_de_sousa.get()
 
+        # Assegure-se de que todos os campos são preenchidos antes de tentar registrar
+        if not (nome and senha and telefone and endereco):
+            messagebox.showwarning("Aviso", "Todos os campos são obrigatórios!")
+            return
         try:
             # ... lógica para adicionar o usuário ...
             self.gerenciador_crud.adicionar_usuario(
@@ -86,5 +90,7 @@ class RegisterWindow(tk.Toplevel):
                 watch_one_piece=one_piece,
                 is_de_sousa=de_sousa
             )
+            messagebox.showinfo("Sucesso", "Usuário cadastrado com sucesso!")
+            self.destroy()  # Fecha a janela após o sucesso
         except Exception as e:
             messagebox.showerror("Erro", str(e))

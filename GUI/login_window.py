@@ -34,10 +34,12 @@ class LoginWindow(tk.Toplevel):
     def login(self):
         email = self.entry_email.get()
         senha = self.entry_senha.get()
-        # Aqui você deve inserir a lógica de autenticação usando self.gerenciador_crud
-        usuario = self.gerenciador_crud.autenticar_usuario(email, senha)
-        if usuario:
-            messagebox.showinfo("Login bem-sucedido", f"Bem-vindo {usuario['nome']}!")
+        success, usuario = self.gerenciador_crud.autenticar_usuario(email, senha)
+        if success:
+            messagebox.showinfo("Login", "Login bem-sucedido!")
+            self.master.usuario_logado = usuario  # Armazena o usuário logado
+            self.master.update_login_state(True)  # Atualiza o estado de login na janela principal
             self.destroy()  # Fecha a janela de login
         else:
-            messagebox.showerror("Erro de login", "E-mail ou senha incorretos")
+            messagebox.showerror("Erro de Login", "E-mail ou senha incorretos")
+
